@@ -25,6 +25,7 @@ import common.money.Percentage;
  * Tests the JDBC reward repository with a test data source to verify data access and relational-to-object mapping
  * behavior works as expected.
  */
+
 public class JdbcRewardRepositoryTests {
 
 	private JdbcRewardRepository repository;
