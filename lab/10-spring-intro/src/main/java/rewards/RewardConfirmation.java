@@ -34,7 +34,6 @@ public class RewardConfirmation {
 	public AccountContribution getAccountContribution() {
 		return accountContribution;
 	}
-
 	public String toString() {
 		return confirmationNumber;
 	}
