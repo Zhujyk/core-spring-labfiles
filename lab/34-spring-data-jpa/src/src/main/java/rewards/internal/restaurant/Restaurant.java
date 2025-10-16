@@ -1,11 +1,17 @@
 package rewards.internal.restaurant;
 
-import common.money.MonetaryAmount;
-import common.money.Percentage;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import rewards.Dining;
 import rewards.internal.account.Account;
 
-import javax.persistence.*;
+import common.money.MonetaryAmount;
+import common.money.Percentage;
 
 /**
  * A restaurant establishment in the network. Like AppleBee's.
