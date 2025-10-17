@@ -27,7 +27,7 @@ public class RestaurantHealthCheckTest {
 		// - Create an instance of RestaurantHealthCheck class
 		// - Remove the two @Disabled annotations below
 		// - Run the test, make sure it passes.
-		restaurantHealthCheck = null;
+		restaurantHealthCheck = new RestaurantHealthCheck(restaurantRepository);
 	}
 
 	@Test

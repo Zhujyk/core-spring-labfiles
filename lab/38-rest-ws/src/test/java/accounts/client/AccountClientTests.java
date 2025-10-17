@@ -3,8 +3,12 @@ package accounts.client;
 import common.money.Percentage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.client.RestTemplateAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import rewards.internal.account.Account;
@@ -13,13 +17,17 @@ import rewards.internal.account.Beneficiary;
 import java.net.URI;
 import java.util.Random;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AccountClientTests {
 
-	private static final String BASE_URL = "http://localhost:8080";
-	
-	private RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+	private static final String BASE_URL = "";
+
 	private Random random = new Random();
 	
 	@Test
@@ -86,36 +94,19 @@ public class AccountClientTests {
 	}
 	
 	@Test
-	public void addAndDeleteBeneficiary() {
-		// perform both add and delete to avoid issues with side effects
-        URI uri = restTemplate.postForLocation(BASE_URL + "/accounts/{accountId}/beneficiaries", "David", 1);
+    public void addAndDeleteBeneficiary() {
+        // perform both add and delete to avoid issues with side effects
+        String addUrl = "/accounts/{accountId}/beneficiaries";
+        URI newBeneficiaryLocation = restTemplate.postForLocation(addUrl, "David", 1);
+        Beneficiary newBeneficiary = restTemplate.getForObject(newBeneficiaryLocation, Beneficiary.class);
+        assertThat(newBeneficiary.getName()).isEqualTo("David");
 
-		// TODO-13: Create a new Beneficiary
-		// - Remove the @Disabled on this test method.
-		// - Create a new Beneficiary called "David" for the account with id 1
-		//	 (POST the String "David" to the "/accounts/{accountId}/beneficiaries" URL).
-		// - Store the returned location URI in a variable.
-		
-		// TODO-14: Retrieve the Beneficiary you just created from the location that was returned
-		Beneficiary newBeneficiary = restTemplate.getForObject(uri, Beneficiary.class);; // Modify this line to use the restTemplate
-		
-		assertNotNull(newBeneficiary);
-		assertEquals("David", newBeneficiary.getName());
-		
-		// TODO-15: Delete the newly created Beneficiary
+        restTemplate.delete(newBeneficiaryLocation);
 
-        restTemplate.delete(uri);
-		HttpClientErrorException httpClientErrorException = assertThrows(HttpClientErrorException.class, () -> {
-			System.out.println("You SHOULD get the exception \"No such beneficiary with name 'David'\" in the server.");
+        ResponseEntity<Beneficiary> response =
+                restTemplate.getForEntity(newBeneficiaryLocation, Beneficiary.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 
-			// TODO-16: Try to retrieve the newly created Beneficiary again.
-			// - Run this test, then. It should pass because we expect a 404 Not Found
-			//   If not, it is likely your delete in the previous step
-			//   was not successful.
-            restTemplate.getForObject(uri, Beneficiary.class);
 
-		});
-		assertEquals(HttpStatus.NOT_FOUND, httpClientErrorException.getStatusCode());
-	}
-	
 }

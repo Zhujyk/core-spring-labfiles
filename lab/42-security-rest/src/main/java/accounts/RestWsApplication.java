@@ -1,8 +1,10 @@
 package accounts;
 
+import config.RestSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Import;
 
 // TODO-00: In this lab, you are going to exercise the following:
 // - Observing the default security behavior
@@ -32,13 +34,13 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 //           Boot application using "curl" (or "Postman")
 // - Open a terminal window (if you are using "curl")
 // - Run "curl -i localhost:8080/accounts" and observe 401 response
-// - Run "curl -i -u user:<Spring-Boot-Generated-Password> localhost:8080/accounts"
+// - Run "curl -i -u c09aeee0-b8ad-428a-92c1-9baa7aed5fb2 localhost:8080/accounts"
 //   and observe a successful response
 
 @SpringBootApplication
 //TODO-03: Import security configuration class
 //- Uncomment the line below and go to RestSecurityConfig class
-//@Import(RestSecurityConfig.class)
+@Import(RestSecurityConfig.class)
 @EntityScan("rewards.internal")
 public class RestWsApplication {
 
